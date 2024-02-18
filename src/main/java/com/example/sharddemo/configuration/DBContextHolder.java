@@ -1,19 +1,23 @@
-package com.example.sharddemo.test;
+package com.example.sharddemo.configuration;
 
-public class DBContextHolder {
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
-    private static final ThreadLocal<DBTypeEnum> contextHolder = new ThreadLocal<>();
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class DBContextHolder {
+
+    private static final ThreadLocal<DBTypeEnum> CONTEXT_HOLDER = new ThreadLocal<>();
 
     public static void setCurrentDb(DBTypeEnum dbType) {
-        contextHolder.set(dbType);
+        CONTEXT_HOLDER.set(dbType);
     }
 
     public static DBTypeEnum getCurrentDb() {
-        return contextHolder.get();
+        return CONTEXT_HOLDER.get();
     }
 
     public static void clear() {
-        contextHolder.remove();
+        CONTEXT_HOLDER.remove();
     }
 
 }

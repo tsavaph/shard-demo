@@ -1,4 +1,4 @@
-package com.example.sharddemo.test;
+package com.example.sharddemo.configuration;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 @Configuration
@@ -51,11 +50,11 @@ public class PersistenceConfiguration {
 
     @Bean(name = "multiRoutingDataSource")
     public DataSource multiRoutingDataSource() {
-        Map<Object, Object> targetDataSources = new HashMap<>();
+        var targetDataSources = new HashMap<>();
         targetDataSources.put(DBTypeEnum.MAIN, mainDataSource());
         targetDataSources.put(DBTypeEnum.CLIENT_A, clientADataSource());
         targetDataSources.put(DBTypeEnum.CLIENT_B, clientBDataSource());
-        MultiRoutingDataSource multiRoutingDataSource = new MultiRoutingDataSource();
+        var multiRoutingDataSource = new MultiRoutingDataSource();
         multiRoutingDataSource.setDefaultTargetDataSource(mainDataSource());
         multiRoutingDataSource.setTargetDataSources(targetDataSources);
         return multiRoutingDataSource;
@@ -63,10 +62,10 @@ public class PersistenceConfiguration {
 
     @Bean(name = "multiEntityManager")
     public LocalContainerEntityManagerFactoryBean multiEntityManager() {
-        LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
+        var em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(multiRoutingDataSource());
         em.setPackagesToScan(PACKAGE_SCAN);
-        HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+        var vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
         em.setJpaProperties(hibernateProperties());
         return em;
@@ -74,17 +73,17 @@ public class PersistenceConfiguration {
 
     @Bean(name = "multiTransactionManager")
     public PlatformTransactionManager multiTransactionManager() {
-        JpaTransactionManager transactionManager
-                = new JpaTransactionManager();
+        var transactionManager = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(
-                multiEntityManager().getObject());
+                multiEntityManager().getObject()
+        );
         return transactionManager;
     }
 
     @Primary
     @Bean(name = "dbSessionFactory")
     public LocalSessionFactoryBean dbSessionFactory() {
-        LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
+        var sessionFactoryBean = new LocalSessionFactoryBean();
         sessionFactoryBean.setDataSource(multiRoutingDataSource());
         sessionFactoryBean.setPackagesToScan(PACKAGE_SCAN);
         sessionFactoryBean.setHibernateProperties(hibernateProperties());
@@ -92,9 +91,10 @@ public class PersistenceConfiguration {
     }
 
     private Properties hibernateProperties() {
-        Properties properties = new Properties();
+        var properties = new Properties();
         properties.put("hibernate.show_sql", true);
         properties.put("hibernate.format_sql", true);
+        properties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
         return properties;
     }
 }

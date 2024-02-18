@@ -1,1 +1,15 @@
+app:
+  datasource:
+    main:
+      jdbcUrl: jdbc:postgresql://localhost:5432/postgres1?currentSchema=demo
+      username: postgres1
+      password: 123
+    clienta:
+      jdbcUrl: jdbc:postgresql://localhost:5433/postgres2?currentSchema=demo
+      username: postgres2
+      password: 123
+    clientb:
+      jdbcUrl: jdbc:postgresql://localhost:5434/postgres3?currentSchema=demo
+      username: postgres3
+      password: 123
 
