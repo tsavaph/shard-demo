@@ -1,7 +1,7 @@
 package com.example.sharddemo.service;
 
 import com.example.sharddemo.configuration.DBContextHolder;
-import com.example.sharddemo.configuration.DBTypeEnum;
+import com.example.sharddemo.configuration.DBSourceEnum;
 import com.example.sharddemo.entity.Post;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,11 +20,16 @@ public class PostSelectorService {
 
         var notSavedPosts = new ArrayList<Post>();
 
-        var groupedPosts = posts.stream()
-                .collect(Collectors.groupingBy(Post::getType));
+        var groupedPosts = posts
+                .stream()
+                .collect(Collectors.groupingBy(
+                                p -> selectDataSourceByType(p.getType())
+                        )
+                );
+
 
         for (var entry : groupedPosts.entrySet()) {
-            selectDataSourceByType(entry.getKey());
+            DBContextHolder.setCurrentDb(entry.getKey());
             try {
                 postService.saveAll(entry.getValue());
             } catch (Exception exception) {
@@ -35,13 +40,13 @@ public class PostSelectorService {
         return notSavedPosts;
     }
 
-    private void selectDataSourceByType(Long type) {
+    private DBSourceEnum selectDataSourceByType(Long type) {
         if (type > 0 && type <= 9) {
-            DBContextHolder.setCurrentDb(DBTypeEnum.MAIN);
+            return DBSourceEnum.SOURCE_ONE;
         } else if (type > 10 && type <= 99) {
-            DBContextHolder.setCurrentDb(DBTypeEnum.CLIENT_A);
+            return DBSourceEnum.SOURCE_TWO;
         } else {
-            DBContextHolder.setCurrentDb(DBTypeEnum.CLIENT_B);
+            return DBSourceEnum.DEFAULT;
         }
     }
 

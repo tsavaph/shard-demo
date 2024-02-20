@@ -2,7 +2,7 @@ package com.example.sharddemo.controller;
 
 import com.example.sharddemo.entity.Post;
 import com.example.sharddemo.configuration.DBContextHolder;
-import com.example.sharddemo.configuration.DBTypeEnum;
+import com.example.sharddemo.configuration.DBSourceEnum;
 import com.example.sharddemo.service.PostSelectorService;
 import com.example.sharddemo.service.PostService;
 import lombok.AllArgsConstructor;
@@ -28,10 +28,10 @@ public class PostController {
     public Iterable<Post> getTest(@RequestParam(defaultValue = "main") String client) {
         switch (client) {
             case "client-b":
-                DBContextHolder.setCurrentDb(DBTypeEnum.CLIENT_B);
+                DBContextHolder.setCurrentDb(DBSourceEnum.SOURCE_TWO);
                 break;
             case "client-a":
-                DBContextHolder.setCurrentDb(DBTypeEnum.CLIENT_A);
+                DBContextHolder.setCurrentDb(DBSourceEnum.SOURCE_ONE);
                 break;
         }
         return postService.findAll();
