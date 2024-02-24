@@ -24,7 +24,7 @@ import java.sql.SQLException;
 )
 public class SourceOnePersistenceConfiguration {
 
-    private final String ONE_PACKAGE_SCAN = "com.example.sharddemo.entity.sourceone";
+    private final String ONE_PACKAGE_SCAN = "com.example.sharddemo.entity";
 
     @Bean(name = "oneDataSourceProperties")
     @ConfigurationProperties("app.datasource.source-one")

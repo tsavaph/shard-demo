@@ -25,7 +25,7 @@ import java.sql.SQLException;
 )
 public class SourceDefaultPersistenceConfiguration {
 
-    private final String DEFAULT_PACKAGE_SCAN = "com.example.sharddemo.entity.sourcedefault";
+    private final String DEFAULT_PACKAGE_SCAN = "com.example.sharddemo.entity";
 
     @Primary
     @Bean(name = "defaultDataSourceProperties")

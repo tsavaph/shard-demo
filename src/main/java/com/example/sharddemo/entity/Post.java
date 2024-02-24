@@ -1,4 +1,4 @@
-package com.example.sharddemo.entity.sourcedefault;
+package com.example.sharddemo.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @Table(name = "post")
-public class PostSourceDefault {
+public class Post {
 
     @Id
     @Column(name = "id")
@@ -22,7 +22,7 @@ public class PostSourceDefault {
     @Column(name = "type")
     private Long type;
 
-    public PostSourceDefault(String name, Long type) {
+    public Post(String name, Long type) {
         this.type = type;
         this.name = name;
     }

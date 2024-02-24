@@ -23,7 +23,7 @@ import java.sql.SQLException;
         transactionManagerRef = "twoTransactionManager"
 )
 public class SourceTwoPersistenceConfiguration {
-    private final String TWO_PACKAGE_SCAN = "com.example.sharddemo.entity.sourcetwo";
+    private final String TWO_PACKAGE_SCAN = "com.example.sharddemo.entity";
     @Bean(name = "twoDataSourceProperties")
     @ConfigurationProperties("app.datasource.source-two")
     public DataSourceProperties twoDataSourceProperties() {

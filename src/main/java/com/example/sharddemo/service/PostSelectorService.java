@@ -1,9 +1,7 @@
 package com.example.sharddemo.service;
 
 import com.example.sharddemo.dto.PostDto;
-import com.example.sharddemo.entity.sourcedefault.PostSourceDefault;
-import com.example.sharddemo.entity.sourceone.PostSourceOne;
-import com.example.sharddemo.entity.sourcetwo.PostSourceTwo;
+import com.example.sharddemo.entity.Post;
 import com.example.sharddemo.repository.sourcedefault.PostSourceDefaultRepository;
 import com.example.sharddemo.repository.sourceone.PostSourceOneRepository;
 import com.example.sharddemo.repository.sourcetwo.PostSourceTwoRepository;
@@ -44,7 +42,7 @@ public class PostSelectorService {
                         entry
                                 .getValue()
                                 .stream()
-                                .map(this::selectDataSourceByType)
+                                .map(p -> new Post(p.getName(), p.getType()))
                                 .collect(Collectors.toList()),
                         entry.getKey()
                 );
@@ -64,19 +62,6 @@ public class PostSelectorService {
             return twoRepository;
         } else {
             return defaultRepository;
-        }
-    }
-
-
-    private Object selectDataSourceByType(PostDto postDto) {
-        var type = postDto.getType();
-        var name = postDto.getName();
-        if (type > 0 && type <= 9) {
-            return new PostSourceOne(name, type);
-        } else if (type > 10 && type <= 99) {
-            return new PostSourceTwo(name, type);
-        } else {
-            return new PostSourceDefault(name, type);
         }
     }
 
