@@ -1,11 +1,10 @@
 package com.example.sharddemo.repository.sourcetwo;
 
 
-import com.example.sharddemo.entity.Post;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.example.sharddemo.repository.PostRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PostSourceTwoRepository extends JpaRepository<Post, Long> {
+public interface PostSourceTwoRepository extends PostRepository {
 
 }

@@ -1,13 +1,10 @@
 package com.example.sharddemo.service;
 
+import com.example.sharddemo.configuration.DBSourceEnum;
 import com.example.sharddemo.dto.PostDto;
 import com.example.sharddemo.entity.Post;
-import com.example.sharddemo.repository.sourcedefault.PostSourceDefaultRepository;
-import com.example.sharddemo.repository.sourceone.PostSourceOneRepository;
-import com.example.sharddemo.repository.sourcetwo.PostSourceTwoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,9 +17,6 @@ import java.util.stream.Collectors;
 public class PostSelectorService {
 
     private final PostService postService;
-    private final PostSourceDefaultRepository defaultRepository;
-    private final PostSourceOneRepository oneRepository;
-    private final PostSourceTwoRepository twoRepository;
 
     public List<PostDto> saveAll(List<PostDto> postSourceOnes) {
 
@@ -39,10 +33,9 @@ public class PostSelectorService {
         for (var entry : groupedPosts.entrySet()) {
             try {
                 postService.saveAll(
-                        entry
-                                .getValue()
+                        entry.getValue()
                                 .stream()
-                                .map(p -> new Post(p.getName(), p.getType()))
+                                .map(this::map)
                                 .collect(Collectors.toList()),
                         entry.getKey()
                 );
@@ -55,14 +48,21 @@ public class PostSelectorService {
         return notSavedPosts;
     }
 
-    private JpaRepository selectDataSourceByType(Long type) {
+    private DBSourceEnum selectDataSourceByType(Long type) {
         if (type > 0 && type <= 9) {
-            return oneRepository;
+            return DBSourceEnum.SOURCE_ONE;
         } else if (type > 10 && type <= 99) {
-            return twoRepository;
+            return DBSourceEnum.SOURCE_TWO;
         } else {
-            return defaultRepository;
+            return DBSourceEnum.DEFAULT;
         }
+    }
+
+    private Post map(PostDto postDto) {
+        var entity = new Post();
+        entity.setName(postDto.getName());
+        entity.setType(postDto.getType());
+        return entity;
     }
 
 }
