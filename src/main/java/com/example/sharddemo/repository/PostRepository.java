@@ -1,7 +1,7 @@
 package com.example.sharddemo.repository;
 
-import com.example.sharddemo.entity.Post;
+import com.example.sharddemo.entity.PostEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface PostRepository extends JpaRepository<Post, Long> {
+public interface PostRepository extends JpaRepository<PostEntity, Long> {
 }

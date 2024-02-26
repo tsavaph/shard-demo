@@ -1,8 +1,10 @@
 package com.example.sharddemo.service;
 
-import com.example.sharddemo.configuration.DBSourceEnum;
 import com.example.sharddemo.dto.PostDto;
-import com.example.sharddemo.entity.Post;
+import com.example.sharddemo.repository.PostRepository;
+import com.example.sharddemo.repository.sourcedefault.PostSourceDefaultRepository;
+import com.example.sharddemo.repository.sourceone.PostSourceOneRepository;
+import com.example.sharddemo.repository.sourcetwo.PostSourceTwoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,9 @@ import java.util.stream.Collectors;
 public class PostSelectorService {
 
     private final PostService postService;
+    private final PostSourceDefaultRepository defaultRepository;
+    private final PostSourceOneRepository oneRepository;
+    private final PostSourceTwoRepository twoRepository;
 
     public List<PostDto> saveAll(List<PostDto> postSourceOnes) {
 
@@ -25,7 +30,7 @@ public class PostSelectorService {
         var groupedPosts = postSourceOnes
                 .stream()
                 .collect(Collectors.groupingBy(
-                                p -> selectDataSourceByType(p.getType())
+                                p -> selectRepositoryByType(p.getType())
                         )
                 );
 
@@ -33,11 +38,8 @@ public class PostSelectorService {
         for (var entry : groupedPosts.entrySet()) {
             try {
                 postService.saveAll(
+                        entry.getKey(),
                         entry.getValue()
-                                .stream()
-                                .map(this::map)
-                                .collect(Collectors.toList()),
-                        entry.getKey()
                 );
             } catch (Exception exception) {
                 log.error(exception.getMessage(), exception);
@@ -48,21 +50,14 @@ public class PostSelectorService {
         return notSavedPosts;
     }
 
-    private DBSourceEnum selectDataSourceByType(Long type) {
+    private PostRepository selectRepositoryByType(Long type) {
         if (type > 0 && type <= 9) {
-            return DBSourceEnum.SOURCE_ONE;
+            return oneRepository;
         } else if (type > 10 && type <= 99) {
-            return DBSourceEnum.SOURCE_TWO;
+            return twoRepository;
         } else {
-            return DBSourceEnum.DEFAULT;
+            return defaultRepository;
         }
-    }
-
-    private Post map(PostDto postDto) {
-        var entity = new Post();
-        entity.setName(postDto.getName());
-        entity.setType(postDto.getType());
-        return entity;
     }
 
 }

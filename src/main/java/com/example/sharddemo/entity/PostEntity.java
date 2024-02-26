@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @Table(name = "post")
-public class Post {
+public class PostEntity {
 
     @Id
     @Column(name = "id")
@@ -21,10 +21,5 @@ public class Post {
 
     @Column(name = "type")
     private Long type;
-
-    public Post(String name, Long type) {
-        this.type = type;
-        this.name = name;
-    }
 
 }
