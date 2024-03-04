@@ -9,20 +9,16 @@ public class TransactionRunner {
 
     @Transactional(transactionManager = "defaultTransactionManager")
     public void processDefaultTransaction(Runnable runnable) {
-        process(runnable);
+        runnable.run();
     }
 
     @Transactional(transactionManager = "oneTransactionManager")
     public void processOneTransaction(Runnable runnable) {
-        process(runnable);
+        runnable.run();
     }
 
     @Transactional(transactionManager = "twoTransactionManager")
     public void processTwoTransaction(Runnable runnable) {
-        process(runnable);
-    }
-
-    private void process(Runnable runnable) {
         runnable.run();
     }
 
