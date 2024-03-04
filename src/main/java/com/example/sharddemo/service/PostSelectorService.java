@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Service
@@ -17,10 +18,7 @@ public class PostSelectorService {
 
     private final PostService postService;
 
-    public List<PostDto> saveAll(List<PostDto> postSourceOnes) {
-
-        var notSavedPosts = new ArrayList<PostDto>();
-
+    public void saveAll(List<PostDto> postSourceOnes) {
         var groupedPosts = postSourceOnes
                 .stream()
                 .collect(Collectors.groupingBy(
@@ -28,20 +26,27 @@ public class PostSelectorService {
                         )
                 );
 
-
+        var futures = new ArrayList<CompletableFuture<Void>>();
         for (var entry : groupedPosts.entrySet()) {
+            futures.add(
+                    CompletableFuture.runAsync(
+                            () -> postService.saveAll(
+                                    entry.getKey(),
+                                    entry.getValue()
+                            )
+                    )
+            );
+        }
+        for (var future : futures) {
             try {
-                postService.saveAll(
-                        entry.getKey(),
-                        entry.getValue()
-                );
+                future.get();
+            } catch (InterruptedException exception) {
+                Thread.currentThread().interrupt();
+                log.error(exception.getMessage(), exception);
             } catch (Exception exception) {
                 log.error(exception.getMessage(), exception);
-                notSavedPosts.addAll(postSourceOnes);
             }
         }
-
-        return notSavedPosts;
     }
 
     private DBSourceEnum selectRepositoryByType(Long type) {

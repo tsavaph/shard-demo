@@ -33,9 +33,9 @@ public class PostController {
         posts.add(new PostDto("Post 102", 102L));
         posts.add(new PostDto("Post 103", 103L));
 
-        var notSavedPosts = postSelectorService.saveAll(posts);
+        postSelectorService.saveAll(posts);
 
-        return notSavedPosts.toString();
+        return "OK";
     }
 
 }
