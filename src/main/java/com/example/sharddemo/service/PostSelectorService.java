@@ -1,10 +1,7 @@
 package com.example.sharddemo.service;
 
+import com.example.sharddemo.configuration.DBSourceEnum;
 import com.example.sharddemo.dto.PostDto;
-import com.example.sharddemo.repository.PostRepository;
-import com.example.sharddemo.repository.sourcedefault.PostSourceDefaultRepository;
-import com.example.sharddemo.repository.sourceone.PostSourceOneRepository;
-import com.example.sharddemo.repository.sourcetwo.PostSourceTwoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,9 +16,6 @@ import java.util.stream.Collectors;
 public class PostSelectorService {
 
     private final PostService postService;
-    private final PostSourceDefaultRepository defaultRepository;
-    private final PostSourceOneRepository oneRepository;
-    private final PostSourceTwoRepository twoRepository;
 
     public List<PostDto> saveAll(List<PostDto> postSourceOnes) {
 
@@ -50,13 +44,13 @@ public class PostSelectorService {
         return notSavedPosts;
     }
 
-    private PostRepository selectRepositoryByType(Long type) {
+    private DBSourceEnum selectRepositoryByType(Long type) {
         if (type > 0 && type <= 9) {
-            return oneRepository;
+            return DBSourceEnum.SOURCE_ONE;
         } else if (type > 10 && type <= 99) {
-            return twoRepository;
+            return DBSourceEnum.SOURCE_TWO;
         } else {
-            return defaultRepository;
+            return DBSourceEnum.DEFAULT;
         }
     }
 
