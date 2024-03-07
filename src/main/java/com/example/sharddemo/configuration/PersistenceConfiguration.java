@@ -1,9 +1,6 @@
 package com.example.sharddemo.configuration;
 
 import com.zaxxer.hikari.HikariDataSource;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -20,7 +17,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.Properties;
 
 @Configuration
 @EnableTransactionManagement
@@ -138,7 +134,7 @@ public class PersistenceConfiguration {
         em.setPackagesToScan(PACKAGE_SCAN);
         var vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
-        em.setJpaProperties(hibernateProperties());
+//        em.setJpaProperties(hibernateProperties());
         return em;
     }
 
@@ -157,18 +153,18 @@ public class PersistenceConfiguration {
         var sessionFactoryBean = new LocalSessionFactoryBean();
         sessionFactoryBean.setDataSource(multiRoutingDataSource());
         sessionFactoryBean.setPackagesToScan(PACKAGE_SCAN);
-        sessionFactoryBean.setHibernateProperties(hibernateProperties());
+//        sessionFactoryBean.setHibernateProperties(hibernateProperties());
         return sessionFactoryBean;
     }
 
-    private Properties hibernateProperties() {
-        var properties = new Properties();
-        properties.put("hibernate.show_sql", true);
-        properties.put("hibernate.batch_size", 50);
-        properties.put("hibernate.order_inserts", true);
-        properties.put("hibernate.order_updates", true);
-        properties.put("hibernate.jdbc.batch_versioned_data", true);
-        return properties;
-    }
+//    private Properties hibernateProperties() {
+//        var properties = new Properties();
+//        properties.put("hibernate.show_sql", true);
+//        properties.put("hibernate.batch_size", 50);
+//        properties.put("hibernate.order_inserts", true);
+//        properties.put("hibernate.order_updates", true);
+//        properties.put("hibernate.jdbc.batch_versioned_data", true);
+//        return properties;
+//    }
 
 }

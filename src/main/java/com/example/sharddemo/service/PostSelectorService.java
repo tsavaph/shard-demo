@@ -2,7 +2,11 @@ package com.example.sharddemo.service;
 
 import com.example.sharddemo.configuration.DBContextHolder;
 import com.example.sharddemo.configuration.DBSourceEnum;
+import com.example.sharddemo.dto.PostDto;
 import com.example.sharddemo.entity.Post;
+import com.example.sharddemo.entity.PostDefault;
+import com.example.sharddemo.entity.PostOne;
+import com.example.sharddemo.entity.PostTwo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +20,9 @@ public class PostSelectorService {
 
     private final PostService postService;
 
-    public List<Post> saveAll(List<Post> posts) {
+    public List<PostDto> saveAll(List<PostDto> posts) {
 
-        var notSavedPosts = new ArrayList<Post>();
+        var notSavedPosts = new ArrayList<PostDto>();
 
         var groupedPosts = posts
                 .stream()
@@ -29,11 +33,17 @@ public class PostSelectorService {
 
 
         for (var entry : groupedPosts.entrySet()) {
-            DBContextHolder.setCurrentDb(entry.getKey());
+            var dbSource = entry.getKey();
+            var postDtos = entry.getValue();
+            DBContextHolder.setCurrentDb(dbSource);
             try {
-                postService.saveAll(entry.getValue());
+                postService.saveAll(
+                        postDtos.stream()
+                                .map(p -> map(p, dbSource))
+                                .collect(Collectors.toList())
+                );
             } catch (Exception exception) {
-                notSavedPosts.addAll(posts);
+                notSavedPosts.addAll(postDtos);
             }
         }
 
@@ -48,6 +58,20 @@ public class PostSelectorService {
         } else {
             return DBSourceEnum.DEFAULT;
         }
+    }
+
+    private Post map(PostDto postDto, DBSourceEnum dbSource) {
+        Post p;
+        if (dbSource == DBSourceEnum.SOURCE_ONE) {
+            p = new PostOne();
+        } else if (dbSource == DBSourceEnum.SOURCE_TWO) {
+            p = new PostTwo();
+        } else {
+            p = new PostDefault();
+        }
+        p.setType(postDto.getType());
+        p.setName(postDto.getName());
+        return p;
     }
 
 }

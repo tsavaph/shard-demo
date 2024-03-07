@@ -1,14 +1,14 @@
 package com.example.sharddemo.entity;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 
-@Entity
-@Data
-@NoArgsConstructor
-@Table(name = "post")
+@MappedSuperclass
+@Getter
+@Setter
 public class Post {
 
     @Id
@@ -21,11 +21,5 @@ public class Post {
 
     @Column(name = "type")
     private Long type;
-
-
-    public Post(String name, Long type) {
-        this.name = name;
-        this.type = type;
-    }
 
 }

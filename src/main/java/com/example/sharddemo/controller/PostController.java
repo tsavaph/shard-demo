@@ -1,8 +1,9 @@
 package com.example.sharddemo.controller;
 
-import com.example.sharddemo.entity.Post;
 import com.example.sharddemo.configuration.DBContextHolder;
 import com.example.sharddemo.configuration.DBSourceEnum;
+import com.example.sharddemo.dto.PostDto;
+import com.example.sharddemo.entity.Post;
 import com.example.sharddemo.service.PostSelectorService;
 import com.example.sharddemo.service.PostService;
 import lombok.AllArgsConstructor;
@@ -40,18 +41,18 @@ public class PostController {
     @GetMapping("/init-data")
     @ResponseBody
     public String initialData() {
-        var posts = new ArrayList<Post>();
-        posts.add(new Post("Post 1", 1L));
-        posts.add(new Post("Post 2", 2L));
-        posts.add(new Post("Post 3", 3L));
+        var posts = new ArrayList<PostDto>();
+        posts.add(new PostDto("Post 1", 1L));
+        posts.add(new PostDto("Post 2", 2L));
+        posts.add(new PostDto("Post 3", 3L));
 
-        posts.add(new Post("Post 11", 11L));
-        posts.add(new Post("Post 12", 12L));
-        posts.add(new Post("Post 13", 13L));
+        posts.add(new PostDto("Post 11", 11L));
+        posts.add(new PostDto("Post 12", 12L));
+        posts.add(new PostDto("Post 13", 13L));
 
-        posts.add(new Post("Post 101", 101L));
-        posts.add(new Post("Post 102", 102L));
-        posts.add(new Post("Post 103", 103L));
+        posts.add(new PostDto("Post 101", 101L));
+        posts.add(new PostDto("Post 102", 102L));
+        posts.add(new PostDto("Post 103", 103L));
 
         var notSavedPosts = postSelectorService.saveAll(posts);
 
