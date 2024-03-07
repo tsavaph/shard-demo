@@ -8,17 +8,17 @@ import org.springframework.transaction.annotation.Transactional;
 public class TransactionRunner {
 
     @Transactional(transactionManager = "defaultTransactionManager")
-    public void processDefaultTransaction(Runnable runnable) {
+    public void runDefaultTransaction(Runnable runnable) {
         runnable.run();
     }
 
     @Transactional(transactionManager = "oneTransactionManager")
-    public void processOneTransaction(Runnable runnable) {
+    public void runOneTransaction(Runnable runnable) {
         runnable.run();
     }
 
     @Transactional(transactionManager = "twoTransactionManager")
-    public void processTwoTransaction(Runnable runnable) {
+    public void runTwoTransaction(Runnable runnable) {
         runnable.run();
     }
 
