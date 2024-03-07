@@ -1,12 +1,10 @@
 package com.example.sharddemo.service;
 
 import com.example.sharddemo.configuration.DBSourceEnum;
-import com.example.sharddemo.configuration.TransactionRunner;
+import com.example.sharddemo.configuration.TransactionProcessor;
 import com.example.sharddemo.dto.PostDto;
 import com.example.sharddemo.entity.PostEntity;
-import com.example.sharddemo.repository.sourcedefault.PostSourceDefaultRepository;
-import com.example.sharddemo.repository.sourceone.PostSourceOneRepository;
-import com.example.sharddemo.repository.sourcetwo.PostSourceTwoRepository;
+import com.example.sharddemo.repository.RepositorySelector;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,29 +15,20 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class PostService {
 
-    private final PostSourceDefaultRepository defaultRepository;
-    private final PostSourceOneRepository oneRepository;
-    private final PostSourceTwoRepository twoRepository;
-    private final TransactionRunner transactionRunner;
+    private final RepositorySelector repositorySelector;
+    private final TransactionProcessor transactionProcessor;
 
-    public void saveAll(DBSourceEnum postsByDbSource, List<PostDto> posts) {
+    public void saveAll(DBSourceEnum dbSource, List<PostDto> posts) {
         var postEntities = posts.stream()
                 .map(this::map)
                 .collect(Collectors.toList());
 
-        if (postsByDbSource == DBSourceEnum.SOURCE_ONE) {
-            transactionRunner.processOneTransaction(
-                    () -> oneRepository.saveAll(postEntities)
-            );
-        } else if (postsByDbSource == DBSourceEnum.SOURCE_TWO) {
-            transactionRunner.processTwoTransaction(
-                    () -> twoRepository.saveAll(postEntities)
-            );
-        } else {
-            transactionRunner.processDefaultTransaction(
-                    () -> defaultRepository.saveAll(postEntities)
-            );
-        }
+        var repo = repositorySelector.selectPostRepository(dbSource);
+
+        transactionProcessor.process(
+                () -> repo.saveAll(postEntities),
+                dbSource
+        );
     }
 
     private PostEntity map(PostDto postDto) {
