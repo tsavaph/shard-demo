@@ -22,7 +22,7 @@ public class PostSelectorService {
         var groupedPosts = postSourceOnes
                 .stream()
                 .collect(Collectors.groupingBy(
-                                p -> selectRepositoryByType(p.getType())
+                                p -> selectDbSourceByType(p.getType())
                         )
                 );
 
@@ -49,7 +49,7 @@ public class PostSelectorService {
         }
     }
 
-    private DBSourceEnum selectRepositoryByType(Long type) {
+    private DBSourceEnum selectDbSourceByType(Long type) {
         if (type > 0 && type <= 9) {
             return DBSourceEnum.SOURCE_ONE;
         } else if (type > 10 && type <= 99) {
